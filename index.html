@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; connect-src https://warjhicxrbphwcxoorae.supabase.co; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'">
+<title>Check your results</title>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<style>
+  :root { --brand:#1d4f9f; --brand-dark:color-mix(in srgb,var(--brand) 70%,#000); --ink:#14213d; --muted:#53627c;
+    --good:#14663f; --fair:#8a6100; --weak:#a14a12; --fail:#a3262a; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; color:var(--ink); font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(60% 40% at 15% 10%,color-mix(in srgb,var(--brand) 38%,transparent),transparent 70%),
+      radial-gradient(50% 40% at 90% 20%,color-mix(in srgb,#f0c23d 30%,transparent),transparent 70%),
+      radial-gradient(60% 45% at 50% 100%,color-mix(in srgb,var(--brand) 30%,transparent),transparent 70%),
+      color-mix(in srgb,var(--brand) 8%,#fff); background-attachment:fixed; }
+  .wrap { max-width:480px; margin:0 auto; padding:18px 14px 40px; }
+  header { display:flex; gap:12px; align-items:center; margin-bottom:14px; animation:up .5s both; }
+  header img { width:60px; height:60px; border-radius:12px; object-fit:cover; background:#fff; }
+  header h1 { margin:0; font-size:1.25rem; line-height:1.2; color:var(--brand-dark); }
+  header p { margin:2px 0 0; color:var(--muted); font-size:.85rem; }
+  .glass { background:rgba(255,255,255,.66); border:1px solid rgba(255,255,255,.7); border-radius:16px;
+    box-shadow:0 8px 30px rgba(20,33,61,.12); backdrop-filter:blur(14px) saturate(140%); -webkit-backdrop-filter:blur(14px) saturate(140%);
+    padding:18px; animation:up .5s .08s both; }
+  h2 { margin:0 0 4px; font-size:1.35rem; }
+  .lead { margin:0 0 6px; color:var(--muted); font-size:.93rem; }
+  label { display:block; font-weight:600; font-size:.9rem; margin:13px 0 5px; }
+  input, select { width:100%; font:inherit; padding:12px; border:1.5px solid rgba(20,33,61,.18); border-radius:10px; background:rgba(255,255,255,.85); color:var(--ink); }
+  input:focus-visible, select:focus-visible, button:focus-visible { outline:3px solid var(--brand); outline-offset:2px; }
+  input.code { font-family:ui-monospace,Menlo,Consolas,monospace; letter-spacing:.08em; text-transform:uppercase; }
+  button { font:inherit; font-weight:600; border:0; border-radius:10px; padding:13px 16px; cursor:pointer; }
+  .main { width:100%; margin-top:18px; color:#fff; background:linear-gradient(135deg,var(--brand),var(--brand-dark)); transition:transform .15s; }
+  .main:active { transform:scale(.98); } .main:disabled { opacity:.6; cursor:wait; }
+  .line { background:transparent; color:var(--brand-dark); border:1.5px solid rgba(20,33,61,.2); }
+  .err { margin-top:14px; padding:10px 12px; border-left:4px solid var(--fail); background:rgba(163,38,42,.09); border-radius:8px; font-size:.94rem; }
+  .note { color:var(--muted); font-size:.82rem; margin:12px 2px 0; }
+  .cf-turnstile { margin-top:14px; }
+  table { width:100%; border-collapse:collapse; margin:10px 0; font-size:.9rem; }
+  th, td { text-align:left; padding:9px 4px; border-top:1px solid rgba(20,33,61,.12); }
+  th { color:var(--muted); font-weight:500; font-size:.78rem; } .n { text-align:right; }
+  td.g { text-align:right; font-weight:700; font-size:1.05rem; }
+  .g-good { color:var(--good); } .g-fair { color:var(--fair); } .g-weak { color:var(--weak); } .g-fail { color:var(--fail); }
+  .meta { display:grid; grid-template-columns:auto 1fr; gap:3px 14px; margin:8px 0 12px; font-size:.92rem; }
+  .meta dt { color:var(--muted); } .meta dd { margin:0; font-weight:500; overflow-wrap:anywhere; }
+  .avg { margin:8px 0 2px; font-weight:600; }
+  .row { display:flex; gap:10px; margin-top:14px; } .row button { flex:1; }
+  [hidden] { display:none !important; }
+  @keyframes up { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+  @media (prefers-reduced-motion:reduce) { * { animation:none !important; transition:none !important; } }
+  @media print { body { background:#fff; } .glass { background:#fff; box-shadow:none; backdrop-filter:none; border:1px solid #999; }
+    .row, .note, #formView { display:none !important; } .g-good,.g-fair,.g-weak,.g-fail { color:#000; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img id="logo" alt="" hidden>
+    <div><h1 id="schoolName">Check your results</h1><p id="sub">Online results</p></div>
+  </header>
+
+  <section id="formView" class="glass">
+    <h2>Check your results</h2>
+    <p class="lead">Enter the details exactly as on your index slip and checker card.</p>
+    <form id="form" novalidate autocomplete="off">
+      <label for="term">Term</label>
+      <select id="term"><option value="">Choose term</option><option value="1">Term 1</option><option value="2">Term 2</option><option value="3">Term 3</option></select>
+      <label for="index">Index number</label>
+      <input id="index" type="text" autocapitalize="characters" maxlength="30">
+      <label for="code">Checker code</label>
+      <input id="code" class="code" type="text" autocapitalize="characters" placeholder="XXXX-XXXX-XXXX" maxlength="14">
+      <label for="dob">Date of birth</label>
+      <input id="dob" type="date">
+      <div id="err" class="err" role="alert" hidden></div>
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAFsens4I4RfmPNh_"></div>
+      <button id="go" class="main" type="submit">Check result</button>
+    </form>
+    <p class="note">A checker card works for one student and one term. Keep it private until you use it.</p>
+  </section>
+
+  <section id="slip" class="glass" hidden>
+    <h2 id="rName"></h2>
+    <dl class="meta">
+      <dt>Index number</dt><dd id="rIndex"></dd><dt>Class</dt><dd id="rClass"></dd>
+      <dt>Term</dt><dd id="rTerm"></dd><dt>Academic year</dt><dd id="rYear"></dd>
+    </dl>
+    <table>
+      <thead><tr><th>Subject</th><th class="n">Class (30)</th><th class="n">Exam (70)</th><th class="n">Total</th><th class="n">Grade</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <p class="avg">Average: <span id="rAvg"></span></p>
+    <p class="note" id="left"></p>
+    <div class="row"><button class="main" id="print" type="button" style="margin-top:0">Print or save</button>
+      <button class="line" id="again" type="button">Check another</button></div>
+  </section>
+</div>
+
+<script>
+  const BASE = "https://warjhicxrbphwcxoorae.supabase.co";
+  const KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhcmpoaWN4cmJwaHdjeG9vcmFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzMDUxNjQsImV4cCI6MjEwODg4MTE2NH0.vstPo4aEebpt2KvzQJ2EI3BOA5aebngr-1FhZYWkTF8";
+  const H = { "Content-Type": "application/json", apikey: KEY, Authorization: "Bearer " + KEY };
+  const $ = (id) => document.getElementById(id);
+  const slug = (new URLSearchParams(location.search).get("school") || "").toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 30);
+
+  function brand(c) {
+    if (/^#[0-9a-fA-F]{6}$/.test(c || "")) document.documentElement.style.setProperty("--brand", c);
+  }
+  function fail(msg) { $("err").textContent = msg; $("err").hidden = false; }
+  function gcls(g) {
+    const c = String(g || "").trim().toUpperCase().charAt(0);
+    return c === "A" || c === "B" ? "g-good" : c === "C" ? "g-fair" : c === "D" ? "g-weak" : "g-fail";
+  }
+
+  (async function loadSchool() {
+    if (!slug) { $("schoolName").textContent = "Open your school's link"; $("sub").textContent = "Ask your school for the results link"; $("formView").hidden = true; return; }
+    try {
+      const r = await fetch(BASE + "/rest/v1/rpc/get_school_info", { method: "POST", headers: H, body: JSON.stringify({ p_school: slug }) });
+      const d = r.ok ? await r.json() : null;
+      if (!d) { $("schoolName").textContent = "School not found"; $("sub").textContent = "Please check the link you were given"; $("formView").hidden = true; return; }
+      brand(d.brand_color);
+      $("schoolName").textContent = d.school_name; document.title = "Results | " + d.school_name;
+      $("sub").textContent = ["Online results", d.academic_year && ("Academic year " + d.academic_year)].filter(Boolean).join(" · ");
+      if (d.term) $("term").value = String(d.term);
+      if (d.logo_url) { $("logo").src = d.logo_url; $("logo").hidden = false; }
+    } catch (e) { /* the form still works */ }
+  })();
+
+  $("code").addEventListener("input", (e) => {
+    const v = e.target.value.replace(/[^A-Za-z0-9]/g, "").toUpperCase().slice(0, 12);
+    e.target.value = v.match(/.{1,4}/g)?.join("-") ?? "";
+  });
+  const resetCf = () => { try { if (window.turnstile) turnstile.reset(); } catch (e) {} };
+
+  $("form").addEventListener("submit", async (e) => {
+    e.preventDefault(); $("err").hidden = true;
+    const term = Number($("term").value), index = $("index").value.trim().toUpperCase();
+    const code = $("code").value.trim(), dob = $("dob").value;
+    const token = document.querySelector('[name="cf-turnstile-response"]')?.value || "";
+    if (![1, 2, 3].includes(term)) return fail("Please choose your term.");
+    if (!index || !code || !dob) return fail("Enter your index number, checker code and date of birth.");
+    if (!token) return fail("Please wait for the verification to finish.");
+    $("go").disabled = true; $("go").textContent = "Checking...";
+    try {
+      const r = await fetch(BASE + "/functions/v1/check-result", { method: "POST", headers: H,
+        body: JSON.stringify({ index, code, dob, token, term, school: slug }) });
+      let d = null; try { d = await r.json(); } catch (_) {}
+      if (!r.ok || !d || !d.ok) { fail((d && d.error) || "Something went wrong. Please try again."); return; }
+      show(d);
+    } catch (_) { fail("Network problem. Check your internet and try again."); }
+    finally { $("go").disabled = false; $("go").textContent = "Check result"; resetCf(); }
+  });
+
+  function show(d) {
+    $("rName").textContent = d.student.full_name; $("rIndex").textContent = d.student.index_number;
+    $("rClass").textContent = d.class || ""; $("rTerm").textContent = "Term " + d.term; $("rYear").textContent = d.academic_year || "";
+    const tb = $("rows"); tb.textContent = "";
+    (d.results || []).forEach((x) => {
+      const tr = document.createElement("tr");
+      [[x.subject, ""], [x.class_score, "n"], [x.exam_score, "n"], [x.total, "n"]].forEach(([v, c]) => {
+        const td = document.createElement("td"); td.textContent = v ?? ""; if (c) td.className = c; tr.append(td); });
+      const g = document.createElement("td"); g.className = "g " + gcls(x.grade); g.textContent = x.grade || ""; tr.append(g); tb.append(tr);
+    });
+    $("rAvg").textContent = d.average ?? "";
+    $("left").textContent = typeof d.checks_left === "number" ? "Checks left on this card: " + d.checks_left : "";
+    $("formView").hidden = true; $("slip").hidden = false; window.scrollTo(0, 0);
+  }
+  $("print").addEventListener("click", () => window.print());
+  $("again").addEventListener("click", () => { $("form").reset(); $("slip").hidden = true; $("formView").hidden = false; resetCf(); });
+</script>
+</body>
+</html>
